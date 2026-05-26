@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Certificado</title>
 
-  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
 
   <!-- PDF -->
@@ -53,7 +52,6 @@
       background-color: #4CAF50;
       color: white;
       border: none;
-      transition: background-color 0.3s;
     }
 
     button:hover {
@@ -64,7 +62,11 @@
       display: none;
     }
 
-    /* ===== CERTIFICADO RESPONSIVO ===== */
+    #btnBaixar {
+      display: none;
+    }
+
+    /* ===== CERTIFICADO ===== */
     .container {
       position: relative;
       width: 100%;
@@ -92,14 +94,7 @@
       text-align: center;
     }
 
-    /* ===== MOBILE ===== */
     @media screen and (max-width: 768px) {
-
-      .container {
-        width: 100vw;
-        height: auto;
-      }
-
       body {
         min-width: 100vh;
       }
@@ -109,7 +104,6 @@
       size: A4 landscape;
       margin: 0;
     }
-
   </style>
 </head>
 
@@ -118,16 +112,16 @@
   <div class="formulario">
     <h2>Gerador de Certificado</h2>
 
-    <label for="nome">Nome Completo:</label>
+    <label>Nome Completo:</label>
     <input type="text" id="nome" placeholder="Digite o nome completo" />
 
-    <button onclick="gerar()">Gerar e Baixar Certificado</button>
+    <button onclick="gerar()">Gerar Certificado</button>
+    <button id="btnBaixar" onclick="baixarPDF()">Baixar PDF</button>
   </div>
 
   <div id="preview">
     <div class="container" id="certificado">
-      <img src="certificado_base.jpeg" class="certificado" alt="Certificado" />
-
+      <img src="certificado_base.jpeg" class="certificado">
       <div class="nome-dinamico" id="nome-certificado">SEU NOME AQUI</div>
     </div>
   </div>
@@ -141,14 +135,9 @@
         return;
       }
 
-      nome = nome.toUpperCase();
-
-      document.getElementById('nome-certificado').innerText = nome;
+      document.getElementById('nome-certificado').innerText = nome.toUpperCase();
       document.getElementById('preview').style.display = 'block';
-
-      setTimeout(() => {
-        baixarPDF();
-      }, 300);
+      document.getElementById('btnBaixar').style.display = 'inline-block';
     }
 
     function baixarPDF() {
