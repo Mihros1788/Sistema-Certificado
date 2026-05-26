@@ -1,148 +1,101 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Certificado</title>
 
-  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
+
+  <!-- Biblioteca para gerar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      background-color: #eee;
+      background: #eee;
       margin: 0;
       padding: 0;
     }
 
     .formulario {
-      margin: 20px;
-      padding: 10px;
-    }
-
-    label {
-      display: block;
-      font-size: 18px;
-      margin-bottom: 5px;
-      font-weight: bold;
+      padding: 20px;
     }
 
     input {
       padding: 12px;
-      font-size: 18px;
       width: 90%;
-      max-width: 500px;
-      margin: 0 auto 10px auto;
-      display: block;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      max-width: 400px;
+      font-size: 16px;
+      margin: 10px 0;
     }
 
     button {
-      padding: 15px 30px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      width: 90%;
-      max-width: 300px;
-      background-color: #4CAF50;
-      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
       border: none;
-      transition: background-color 0.3s;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
     }
 
     button:hover {
-      background-color: #45a049;
+      background: #3e8e41;
     }
 
     #preview {
       display: none;
+      margin-top: 20px;
     }
 
-    #btnImprimir {
-      display: none;
-    }
-
-    /* ===== CERTIFICADO RESPONSIVO ===== */
     .container {
       position: relative;
       width: 100%;
-      max-width: 1123px;
+      max-width: 1100px;
+      margin: auto;
       aspect-ratio: 1123 / 794;
-      margin: 0 auto;
     }
 
-    .certificado {
+    .container img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      display: block;
     }
 
-    .nome-dinamico {
+    .nome {
       position: absolute;
-      top: 41%;
+      top: 42%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: clamp(18px, 3vw, 40px);
       font-family: 'Fraunces', serif;
-      font-weight: 700;
-      color: #000;
+      font-size: clamp(18px, 3vw, 42px);
+      font-weight: bold;
+      color: black;
       width: 80%;
       text-align: center;
     }
 
-    /* ===== MOBILE ===== */
-    @media screen and (max-width: 768px) {
-
-      .container {
-        width: 100vw;
-        height: auto;
-      }
-
-      #preview {
-        overflow-x: auto;
-      }
-
-      body {
-        min-width: 100vh;
-      }
-    }
-
-    /* ===== PRINT ===== */
+    /* PRINT (mantém qualidade do PDF) */
     @media print {
-
-      html, body {
-        width: 297mm;
-        height: 210mm;
+      body * {
+        visibility: hidden;
       }
 
-      body {
-        visibility: hidden;
-        margin: 0;
-        padding: 0;
+      #preview, #preview * {
+        visibility: visible;
       }
 
       #preview {
-        visibility: visible;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
       }
-
-      .container {
-        width: 297mm;
-        height: 210mm;
-      }
     }
-
-    @page {
-      size: A4 landscape;
-      margin: 0;
-    }
-
   </style>
 </head>
 
@@ -151,35 +104,47 @@
   <div class="formulario">
     <h2>Gerador de Certificado</h2>
 
-    <label for="nome">Nome Completo:</label>
-    <input type="text" id="nome" placeholder="Digite o nome completo" />
+    <input type="text" id="nome" placeholder="Digite seu nome">
+
+    <br>
 
     <button onclick="gerar()">Gerar Certificado</button>
-    <button id="btnImprimir" onclick="window.print()">Imprimir / Salvar como PDF</button>
+    <button onclick="baixarPDF()" id="btnPDF" style="display:none;">Baixar PDF</button>
   </div>
 
   <div id="preview">
-    <div class="container">
-      <img src="certificado_base.jpeg" class="certificado" alt="Certificado" />
-
-      <div class="nome-dinamico" id="nome-certificado">SEU NOME AQUI</div>
+    <div class="container" id="certificado">
+      <img src="certificado_base.jpeg" alt="Certificado">
+      <div class="nome" id="nomeCert">Seu Nome</div>
     </div>
   </div>
 
   <script>
     function gerar() {
-      let nome = document.getElementById('nome').value.trim();
+      const nome = document.getElementById("nome").value.trim();
 
-      if (nome === '') {
-        alert('Por favor, insira um nome.');
+      if (!nome) {
+        alert("Digite seu nome!");
         return;
       }
 
-      nome = nome.toUpperCase();
+      document.getElementById("nomeCert").innerText = nome.toUpperCase();
+      document.getElementById("preview").style.display = "block";
+      document.getElementById("btnPDF").style.display = "inline-block";
+    }
 
-      document.getElementById('nome-certificado').innerText = nome;
-      document.getElementById('preview').style.display = 'block';
-      document.getElementById('btnImprimir').style.display = 'inline-block';
+    function baixarPDF() {
+      const elemento = document.getElementById("certificado");
+
+      const opt = {
+        margin: 0,
+        filename: 'certificado.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
+
+      html2pdf().set(opt).from(elemento).save();
     }
   </script>
 
