@@ -7,6 +7,9 @@
   <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
 
+  <!-- PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
     body {
       font-family: sans-serif;
@@ -61,10 +64,6 @@
       display: none;
     }
 
-    #btnImprimir {
-      display: none;
-    }
-
     /* ===== CERTIFICADO RESPONSIVO ===== */
     .container {
       position: relative;
@@ -82,7 +81,7 @@
 
     .nome-dinamico {
       position: absolute;
-      top: 39%; /* 🔥 AJUSTADO (um pouco mais para baixo) */
+      top: 39%;
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: clamp(18px, 3vw, 40px);
@@ -101,40 +100,8 @@
         height: auto;
       }
 
-      #preview {
-        overflow-x: auto;
-      }
-
       body {
         min-width: 100vh;
-      }
-    }
-
-    /* ===== PRINT ===== */
-    @media print {
-
-      html, body {
-        width: 297mm;
-        height: 210mm;
-      }
-
-      body {
-        visibility: hidden;
-        margin: 0;
-        padding: 0;
-      }
-
-      #preview {
-        visibility: visible;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }
-
-      .container {
-        width: 297mm;
-        height: 210mm;
       }
     }
 
@@ -154,12 +121,11 @@
     <label for="nome">Nome Completo:</label>
     <input type="text" id="nome" placeholder="Digite o nome completo" />
 
-    <button onclick="gerar()">Gerar Certificado</button>
-    <button id="btnImprimir" onclick="window.print()">Imprimir / Salvar como PDF</button>
+    <button onclick="gerar()">Gerar e Baixar Certificado</button>
   </div>
 
   <div id="preview">
-    <div class="container">
+    <div class="container" id="certificado">
       <img src="certificado_base.jpeg" class="certificado" alt="Certificado" />
 
       <div class="nome-dinamico" id="nome-certificado">SEU NOME AQUI</div>
@@ -179,7 +145,33 @@
 
       document.getElementById('nome-certificado').innerText = nome;
       document.getElementById('preview').style.display = 'block';
-      document.getElementById('btnImprimir').style.display = 'inline-block';
+
+      setTimeout(() => {
+        baixarPDF();
+      }, 300);
+    }
+
+    function baixarPDF() {
+      const elemento = document.getElementById("certificado");
+
+      const opt = {
+        margin: 0,
+        filename: 'certificado.pdf',
+        image: { type: 'jpeg', quality: 1 },
+
+        html2canvas: {
+          scale: 3,
+          useCORS: true
+        },
+
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'landscape'
+        }
+      };
+
+      html2pdf().set(opt).from(elemento).save();
     }
   </script>
 
