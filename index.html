@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -16,34 +16,9 @@
       padding: 0;
     }
 
-    .container {
-      position: relative;
-      width: 1123px;
-      height: 794px;
-      margin: 0 auto;
-    }
-
-    .certificado {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .nome-dinamico {
-      position: absolute;
-      top: 41%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 40px;
-      font-family: 'Fraunces', serif;
-      font-weight: 700;
-      color: #000;
-      width: 80%;
-      text-align: center;
-    }
-
     .formulario {
       margin: 20px;
+      padding: 10px;
     }
 
     label {
@@ -54,13 +29,14 @@
     }
 
     input {
-      padding: 10px;
-      font-size: 16px;
-      width: 500px;
-      margin-bottom: 10px;
+      padding: 12px;
+      font-size: 18px;
+      width: 90%;
+      max-width: 500px;
+      margin: 0 auto 10px auto;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
     button {
@@ -69,7 +45,8 @@
       margin: 10px;
       cursor: pointer;
       border-radius: 5px;
-      width: 300px;
+      width: 90%;
+      max-width: 300px;
       background-color: #4CAF50;
       color: white;
       border: none;
@@ -88,18 +65,76 @@
       display: none;
     }
 
+    /* ===== CERTIFICADO RESPONSIVO ===== */
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 1123px;
+      aspect-ratio: 1123 / 794;
+      margin: 0 auto;
+    }
+
+    .certificado {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .nome-dinamico {
+      position: absolute;
+      top: 41%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(18px, 3vw, 40px);
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      color: #000;
+      width: 80%;
+      text-align: center;
+    }
+
+    /* ===== MOBILE ===== */
+    @media screen and (max-width: 768px) {
+
+      .container {
+        width: 100vw;
+        height: auto;
+      }
+
+      #preview {
+        overflow-x: auto;
+      }
+
+      body {
+        min-width: 100vh;
+      }
+    }
+
+    /* ===== PRINT ===== */
     @media print {
+
+      html, body {
+        width: 297mm;
+        height: 210mm;
+      }
+
       body {
         visibility: hidden;
         margin: 0;
+        padding: 0;
       }
+
       #preview {
         visibility: visible;
         position: absolute;
-        left: 0;
         top: 0;
-        width: 1123px;
-        height: 794px;
+        left: 0;
+        width: 100%;
+      }
+
+      .container {
+        width: 297mm;
+        height: 210mm;
       }
     }
 
@@ -107,6 +142,7 @@
       size: A4 landscape;
       margin: 0;
     }
+
   </style>
 </head>
 
@@ -124,7 +160,6 @@
 
   <div id="preview">
     <div class="container">
-      <!-- CORRIGIDO: .jpeg -->
       <img src="certificado_base.jpeg" class="certificado" alt="Certificado" />
 
       <div class="nome-dinamico" id="nome-certificado">SEU NOME AQUI</div>
@@ -140,7 +175,6 @@
         return;
       }
 
-      // força maiúsculo no certificado
       nome = nome.toUpperCase();
 
       document.getElementById('nome-certificado').innerText = nome;
