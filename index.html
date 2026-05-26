@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificado</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eee;
+      text-align: center;
+    }
+
+    .formulario {
+      padding: 20px;
+    }
+
+    input {
+      padding: 12px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #3e8e41;
+    }
+
+    #preview {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .container {
+      position: relative;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .container img {
+      width: 100%;
+      display: block;
+    }
+
+    .nome {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Fraunces', serif;
+      font-size: 32px;
+      font-weight: bold;
+      color: black;
+      width: 80%;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #preview, #preview * {
+        visibility: visible;
+      }
+
+      #preview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="formulario">
+    <h2>Gerador de Certificado</h2>
+
+    <input type="text" id="nome" placeholder="Digite seu nome">
+
+    <br>
+
+    <button onclick="gerar()">Gerar Certificado</button>
+    <button onclick="window.print()" id="printBtn" style="display:none;">Imprimir / PDF</button>
+  </div>
+
+  <div id="preview">
+    <div class="container">
+      <img src="certificado_base.jpeg" alt="Certificado">
+      <div class="nome" id="nomeCert">Seu Nome</div>
+    </div>
+  </div>
+
+  <script>
+    function gerar() {
+      const nome = document.getElementById("nome").value.trim();
+
+      if (!nome) {
+        alert("Digite seu nome!");
+        return;
+      }
+
+      document.getElementById("nomeCert").innerText = nome.toUpperCase();
+      document.getElementById("preview").style.display = "block";
+      document.getElementById("printBtn").style.display = "inline-block";
+    }
+  </script>
+
+</body>
+</html>
