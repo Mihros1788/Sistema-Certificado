@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Certificado</title>
 
+  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
 
   <!-- Biblioteca PDF -->
@@ -27,18 +28,16 @@
       width: 90%;
       max-width: 400px;
       font-size: 16px;
-      margin: 10px 0;
     }
 
     button {
       padding: 12px 20px;
-      font-size: 16px;
-      border: none;
+      margin: 5px;
       background: #4CAF50;
       color: white;
+      border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin: 5px;
     }
 
     button:hover {
@@ -50,11 +49,13 @@
       margin-top: 20px;
     }
 
-    /* ===== CERTIFICADO ===== */
+    /* =========================
+       CERTIFICADO (FIXO PDF)
+    ========================= */
     .container {
       position: relative;
-      width: 1123px;   /* FIXO para garantir consistência */
-      height: 794px;   /* A4 paisagem exato */
+      width: 1123px;   /* A4 paisagem fixo */
+      height: 794px;
       margin: auto;
     }
 
@@ -70,35 +71,19 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-family: 'Fraunces', serif;
-      font-size: 40px; /* FIXO (resolve diferença mobile/desktop) */
-      font-weight: bold;
+      font-size: 50px; /* FIXO (resolve problema mobile) */
+      font-weight: 700;
       color: black;
       width: 80%;
       text-align: center;
+      word-break: break-word;
     }
 
-    /* ===== MOBILE SÓ INTERFACE ===== */
+    /* Só interface mobile (não afeta PDF) */
     @media screen and (max-width: 768px) {
       .container {
         width: 95vw;
         height: calc(95vw * 0.707);
-      }
-    }
-
-    /* ===== PRINT (backup) ===== */
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-
-      #preview, #preview * {
-        visibility: visible;
-      }
-
-      #preview {
-        position: absolute;
-        top: 0;
-        left: 0;
       }
     }
   </style>
@@ -114,13 +99,15 @@
     <br>
 
     <button onclick="gerar()">Gerar Certificado</button>
-    <button onclick="baixarPDF()" id="btnPDF" style="display:none;">Baixar PDF</button>
+    <button onclick="baixarPDF()" id="btnPDF" style="display:none;">
+      Baixar PDF
+    </button>
   </div>
 
   <div id="preview">
     <div class="container" id="certificado">
       <img src="certificado_base.jpeg" alt="Certificado">
-      <div class="nome" id="nomeCert">Seu Nome</div>
+      <div class="nome" id="nomeCert">SEU NOME</div>
     </div>
   </div>
 
@@ -147,10 +134,10 @@
         image: { type: 'jpeg', quality: 1 },
 
         html2canvas: {
-          scale: 3,
+          scale: 4,
           useCORS: true,
-          letterRendering: true,
-          windowWidth: 1123
+          windowWidth: 1123,
+          windowHeight: 794
         },
 
         jsPDF: {
