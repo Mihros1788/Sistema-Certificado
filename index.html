@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Certificado</title>
 
-  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
 
-  <!-- Biblioteca PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #eee;
-      margin: 0;
       text-align: center;
     }
 
@@ -24,24 +22,20 @@
     }
 
     input {
-      padding: 12px;
       width: 90%;
       max-width: 400px;
+      padding: 12px;
       font-size: 16px;
     }
 
     button {
       padding: 12px 20px;
       margin: 5px;
+      border: none;
       background: #4CAF50;
       color: white;
-      border: none;
       border-radius: 6px;
       cursor: pointer;
-    }
-
-    button:hover {
-      background: #3e8e41;
     }
 
     #preview {
@@ -50,19 +44,25 @@
     }
 
     /* =========================
-       CERTIFICADO (FIXO PDF)
+       CERTIFICADO RESPONSIVO
     ========================= */
     .container {
       position: relative;
-      width: 1123px;   /* A4 paisagem fixo */
-      height: 794px;
+
+      /* 🔥 RESPONSIVO REAL */
+      width: 95vw;
+      max-width: 1123px;
+
+      /* mantém proporção A4 paisagem */
+      aspect-ratio: 1123 / 794;
+
       margin: auto;
     }
 
     .container img {
       width: 100%;
       height: 100%;
-      display: block;
+      object-fit: contain;
     }
 
     .nome {
@@ -70,8 +70,12 @@
       top: 42%;
       left: 50%;
       transform: translate(-50%, -50%);
+
       font-family: 'Fraunces', serif;
-      font-size: 50px; /* FIXO (resolve problema mobile) */
+
+      /* 🔥 responsivo sem quebrar */
+      font-size: clamp(18px, 3.5vw, 50px);
+
       font-weight: 700;
       color: black;
       width: 80%;
@@ -79,11 +83,16 @@
       word-break: break-word;
     }
 
-    /* Só interface mobile (não afeta PDF) */
-    @media screen and (max-width: 768px) {
-      .container {
-        width: 95vw;
-        height: calc(95vw * 0.707);
+    /* =========================
+       PDF (IGNORA RESPONSIVIDADE)
+    ========================= */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #preview, #preview * {
+        visibility: visible;
       }
     }
   </style>
@@ -131,18 +140,20 @@
       const opt = {
         margin: 0,
         filename: 'certificado.pdf',
-        image: { type: 'jpeg', quality: 1 },
+
+        image: {
+          type: 'jpeg',
+          quality: 1
+        },
 
         html2canvas: {
-          scale: 4,
-          useCORS: true,
-          windowWidth: 1123,
-          windowHeight: 794
+          scale: 3,
+          useCORS: true
         },
 
         jsPDF: {
-          unit: 'px',
-          format: [1123, 794],
+          unit: 'mm',
+          format: 'a4',
           orientation: 'landscape'
         }
       };
