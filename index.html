@@ -7,16 +7,15 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,700&display=swap" rel="stylesheet">
 
-  <!-- Biblioteca para gerar PDF -->
+  <!-- Biblioteca PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     body {
-      font-family: sans-serif;
-      text-align: center;
+      font-family: Arial, sans-serif;
       background: #eee;
       margin: 0;
-      padding: 0;
+      text-align: center;
     }
 
     .formulario {
@@ -51,18 +50,17 @@
       margin-top: 20px;
     }
 
+    /* ===== CERTIFICADO ===== */
     .container {
       position: relative;
-      width: 100%;
-      max-width: 1100px;
+      width: 1123px;   /* FIXO para garantir consistência */
+      height: 794px;   /* A4 paisagem exato */
       margin: auto;
-      aspect-ratio: 1123 / 794;
     }
 
     .container img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
       display: block;
     }
 
@@ -72,14 +70,22 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-family: 'Fraunces', serif;
-      font-size: clamp(18px, 3vw, 42px);
+      font-size: 40px; /* FIXO (resolve diferença mobile/desktop) */
       font-weight: bold;
       color: black;
       width: 80%;
       text-align: center;
     }
 
-    /* PRINT (mantém qualidade do PDF) */
+    /* ===== MOBILE SÓ INTERFACE ===== */
+    @media screen and (max-width: 768px) {
+      .container {
+        width: 95vw;
+        height: calc(95vw * 0.707);
+      }
+    }
+
+    /* ===== PRINT (backup) ===== */
     @media print {
       body * {
         visibility: hidden;
@@ -93,7 +99,6 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
       }
     }
   </style>
@@ -140,8 +145,19 @@
         margin: 0,
         filename: 'certificado.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+
+        html2canvas: {
+          scale: 3,
+          useCORS: true,
+          letterRendering: true,
+          windowWidth: 1123
+        },
+
+        jsPDF: {
+          unit: 'px',
+          format: [1123, 794],
+          orientation: 'landscape'
+        }
       };
 
       html2pdf().set(opt).from(elemento).save();
